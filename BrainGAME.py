@@ -52,9 +52,41 @@ def showSequence():
         
 @onMousePressed
 def pressed(x, y):
-    moveTo(x, y):
+        moveTo(x, y)
         if getPixelColorStr() == "red":
-            
+            buttonIndex = 0
+        elif getPixelColorStr() == "yellow":
+            buttonIndex = 1
+        elif getPixelColorStr() == "green":
+            buttonIndex = 2
+        elif getPixelColorStr() == "blue":
+            buttonIndex = 3
+        elif getPixelColorStr() == "white":
+            buttonIndex = -1
+        elif getPixelColorStr() == "black":
+            buttonIndex = -2
+        showLamp(buttonIndex)       
+
+@onMouseReleased
+def release(x, y):
+    global isOk
+    global isUserActive
+    global clickCount
+    global buttonIndex
+    showLamp(-1)
+    clickCount = 0
+    buttonIndex = -1
+    isOk = False
+    isUserActive = True
+    if seq[clickCount] == buttonIndex:
+        clickCount += 1
+        isOk = True
+        while isUserActive:
+            delay(10)
+        if isOk:
+            setStatusText("Mission passed, Respect +")
+        else:
+            setStatusText("Misson failed, we´ll get em next time!")
 
 # ------------------ main ------------------
 Options.setPlaygroundSize(400, 400)    
