@@ -65,24 +65,24 @@ def pressed(x, y):
             buttonIndex = -1
         elif getPixelColorStr() == "black":
             buttonIndex = -2
-        showLamp(buttonIndex)       
+        showLamp(buttonIndex)    
 
 @onMouseReleased
 def release(x, y):
     global isOk
-    global isUserActive
     global clickCount
-    showLamp(-1)    
+    global buttonIndex
+    showLamp(-1)
+    print(clickCount)
+    print(buttonIndex)
     if seq[clickCount] == buttonIndex:
-        isUserActive = True
-        isOk = False
-        while isUserActive:
-            delay(10)
-        if isOk:
+        clickCount += 1
+        if clickCount == len(seq):
             setStatusText("Mission passed, Respect +")
             isOk = True
-        else:
-            setStatusText("Misson failed, we´ll get em next time!")
+    else:
+        setStatusText("Misson failed, we´ll get em next time!")
+        isOk = False
 
 # ------------------ main ------------------
 Options.setPlaygroundSize(400, 400)    
@@ -92,8 +92,10 @@ penUp()
 clear("black")
 setTitle("Brain Game")
 addStatusBar(30)
-
+buttonIndex = 1
 clickCount = 0
+
+
 n = randint(1,3)
 setStatusText("Showing sequences with length: " + str(n) + "...")
 seq = []
