@@ -1,7 +1,8 @@
-# Ex1.py
+# Ex1.py / BrainGame
 
 from gturtle import *
 from random import*
+from soundsystem import *
 
 def showLamp(col): #creating the lamp in the middle that shows the sequence
     setPos(0, 0)
@@ -38,13 +39,11 @@ def showButton(): #creating the 4 buttons around the middle lamp
     dot(50)
     
 def setup(): #starting the game
-
     showSequence()
     showButton()
     
     
 def showSequence(): #showing the sequence
-    global col
     for i in range(n):
         col = seq[i]
         showLamp(col)
@@ -73,45 +72,48 @@ def pressed(x, y):
 
 @onMouseReleased #when mouse button is released, testing if sequence is right
 def release(x, y):
-    global isOk
     global clickCount
     global buttonIndex
     global n
+    global col
+    global seq
     showLamp(-1)
-    print(clickCount)
-    print(buttonIndex)
     if seq[clickCount] == buttonIndex:
         clickCount += 1
-        if clickCount == len(seq):
+        if clickCount == len(seq): #if the whole sequence has been done and everything was right then mission passed
             setStatusText("Mission passed, Respect +")
-            isOk = True
-            cont = askYesNo("Continue? Difficulty will increase.")
+            
+            openSoundPlayerMP3("gta_safull.mp3") #play gta theme song just for fun 
+            play()
+            msgDlg("RESPECT +")
+            
+            cont = askYesNo("Continue? Difficulty will increase.") #play again with +1 sequence
             if cont == True:
                 clear("black")
-                n += 1  
+                n += 1
+                setStatusText("Showing sequences with length: " + str(n) + "...")
                 clickCount = 0
-                seq.clear()
+                del seq[:]
                 for i in range(n):
                     seq.append(randint(0, 3))
-                setStatusText("Showing sequences with length: " + str(n) + "...")
                 print(seq)
                 setup()
-            elif cont == False:
-                msgDlg("Thank you for playing!")
+                
+            elif cont == False: #if user chooses no then exiting program
+                msgDlg("Thank you for playing! You reached Stage " + str(n-2) + ".")
                 exit()
-    else:
+    else: #if not everything was right mission failed
         setStatusText("Misson failed, we´ll get em next time!")
-        isOk = False
         tryagain = askYesNo("Try again?")
-        if tryagain == True:
+        if tryagain == True: #setting up the game again to try again
             clickCount = 0
-            seq.clear()
+            setStatusText("Showing sequences with length: " + str(n) + "...")
+            del seq[:]
             for i in range(n):
                 seq.append(randint(0, 3))   
-            setStatusText("Showing sequences with length: " + str(n) + "...")
             setup()
-        elif tryagain == False:
-            msgDlg("Thank you for playing!")
+        elif tryagain == False: #exiting the game if user chooses no
+            msgDlg("Thank you for playing! You reached Stage " + str(n-3) + ".")
             exit()
             
 # ------------------ main ------------------
